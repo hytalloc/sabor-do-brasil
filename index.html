@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sabor do Brasil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =====================================================
+       VARIÁVEIS E BASE
+       ===================================================== */
+    :root {
+      --laranja:         #D97014;
+      --laranja-escuro: #b85c0f;
+      --branco:          #FFFFFF;
+      --erro:            #FF0000;
+      --fundo:           #faf7f4;
+      --fundo-card:      #ffffff;
+      --texto-principal:#1a1008;
+      --texto-secundario:#6b5a4e;
+      --borda:           #e8ddd6;
+      --sombra:          rgba(217, 112, 20, 0.10);
+      --overlay:         rgba(30, 15, 5, 0.55);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--fundo);
+      color: var(--texto-principal);
+      min-height: 100vh;
+    }
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
+    header {
+      background: var(--laranja);
+      padding: 0 2rem;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--branco); }
+    .logo-emoji { font-size: 1.7rem; }
+    .logo-text  { font-size: 1.25rem; font-weight: 800; color: var(--branco); }
+
+    .nav-acoes { display: flex; align-items: center; gap: 10px; }
+    #info-usuario { color: var(--branco); font-size: 0.85rem; font-weight: 600; }
+
+    /* =====================================================
+       BOTÕES
+       ===================================================== */
+    .btn {
+      padding: 9px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-branco { background: var(--branco); color: var(--laranja); }
+    .btn-branco:hover { background: #fff3e8; }
+    .btn-perigo { background: #dc2626; color: white; padding: 5px 8px; border-radius: 5px; font-size: 0.7rem; }
+
+    /* =====================================================
+       GRID E CARDS (O SEU QUADRADO)
+       ===================================================== */
+    main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    
+    .secao-titulo { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .secao-subtitulo { color: var(--texto-secundario); margin-bottom: 2rem; }
+
+    .grid-receitas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .card-receita {
+      background: var(--fundo-card);
+      border-radius: 20px;
+      border: 1px solid var(--borda);
+      overflow: hidden;
+      box-shadow: 0 4px 15px var(--sombra);
+      transition: 0.3s;
+    }
+
+    .card-receita:hover { transform: translateY(-5px); box-shadow: 0 10px 30px var(--sombra); }
+
+    .card-imagem {
+      background: linear-gradient(135deg, #fff3e8, #fde8cc);
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+    }
+
+    .card-corpo { padding: 1.5rem; }
+    .card-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .card-descricao { font-size: 0.9rem; color: var(--texto-secundario); line-height: 1.5; margin-bottom: 1.2rem; min-height: 3rem; }
+
+    .card-acoes {
+      display: flex;
+      gap: 10px;
+      padding-top: 1rem;
+      border-top: 1px solid var(--borda);
+    }
+
+    .btn-curtir, .btn-comentar {
+      background: none;
+      border: 1.5px solid var(--borda);
+      border-radius: 10px;
+      padding: 8px 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--texto-secundario);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-curtir.ativo { border-color: var(--laranja); color: var(--laranja); background: #fff3e8; }
+
+    /* =====================================================
+       COMENTÁRIOS
+       ===================================================== */
+    .secao-comentarios { border-top: 1px solid var(--borda); padding: 1.2rem; display: none; background: #fafafa; }
+    .secao-comentarios.aberta { display: block; }
+
+    .form-comentario { display: flex; gap: 8px; margin-bottom: 1rem; }
+    .form-comentario input { flex: 1; padding: 8px; border: 1px solid var(--borda); border-radius: 8px; outline: none; }
+    .form-comentario button { background: var(--laranja); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+
+    .lista-comentarios { display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; }
+    .item-comentario { background: white; border-radius: 10px; padding: 10px; font-size: 0.85rem; border: 1px solid var(--borda); display: flex; justify-content: space-between; }
+    .comentario-autor { font-weight: 800; color: var(--laranja); }
+
+    /* =====================================================
+       ESTILO DE ERRO (VALIDAÇÃO)
+       ===================================================== */
+    .grupo-campo input.campo-erro {
+      border-color: var(--erro) !important;
+      background: #fff5f5;
+    }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: var(--overlay); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .modal-overlay.visivel { opacity: 1; pointer-events: all; }
+    .modal { background: white; border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; }
+    .tabs { display: flex; gap: 5px; margin-bottom: 1.5rem; background: #eee; padding: 5px; border-radius: 12px; }
+    .tab { flex: 1; padding: 10px; border: none; cursor: pointer; border-radius: 8px; font-weight: 600; }
+    .tab.ativa { background: var(--laranja); color: white; }
+    .painel-form { display: none; }
+    .painel-form.ativo { display: block; }
+    .grupo-campo { margin-bottom: 1rem; }
+    .grupo-campo label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; }
+    .grupo-campo input { width: 100%; padding: 12px; border: 1.5px solid var(--borda); border-radius: 10px; }
+    .msg-erro { color: var(--erro); font-size: 0.8rem; margin-top: 10px; display: none; }
+    .msg-erro.visivel { display: block; }
+    .btn-submit-modal { width: 100%; padding: 12px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">
+      <span class="logo-emoji">🍽️</span>
+      <span class="logo-text">Sabor do Brasil</span>
+    </a>
+
+    <div class="nav-acoes">
+      <span id="info-usuario"></span>
+      <button id="btn-abrir-modal" class="btn btn-branco" onclick="abrirModal('login')">🔑 Entrar / Cadastrar</button>
+      <button id="btn-logout" class="btn btn-branco" style="display:none" onclick="fazerLogout()">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="secao-titulo">Receitas em Destaque 🇧🇷</h1>
+    <p class="secao-subtitulo">Explore as melhores delícias brasileiras.</p>
+
+    <div class="grid-receitas">
+      {% for receita in receitas %}
+      <div class="card-receita">
+        <div class="card-imagem">{{ receita.imagem }}</div>
+        <div class="card-corpo">
+          <h2 class="card-titulo">{{ receita.titulo }}</h2>
+          <p class="card-descricao">{{ receita.descricao }}</p>
+
+          <div class="card-acoes">
+            <button class="btn-curtir {% if usuario and usuario.nickname in receita.curtidas %}ativo{% endif %}" 
+                    onclick="curtir('{{ receita.id }}', this)">
+              ❤️ <span class="contador-curtida">{{ receita.curtidas | length }}</span>
+            </button>
+
+            <button class="btn-comentar" onclick="toggleComentarios('{{ receita.id }}')">
+              💬 {{ receita.comentarios | length }}
+            </button>
+          </div>
+        </div>
+
+        <div class="secao-comentarios" id="comentarios-{{ receita.id }}">
+          <div class="form-comentario">
+            <input type="text" placeholder="Diga o que achou..." id="input-{{ receita.id }}" />
+            <button onclick="enviarComentario('{{ receita.id }}')">Enviar</button>
+          </div>
+          <div class="lista-comentarios" id="lista-{{ receita.id }}">
+            {% for c in receita.comentarios %}
+            <div class="item-comentario" id="comentario-{{ c.id }}">
+              <div>
+                <span class="comentario-autor">@{{ c.autor_nickname }}</span>: {{ c.texto }}
+              </div>
+              {% if usuario and (usuario.perfil == 'admin' or usuario.id == c.autor_id) %}
+                <button class="btn-perigo" onclick="excluirComentario('{{ c.id }}')">🗑</button>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="tabs">
+        <button class="tab ativa" id="tab-login" onclick="trocarTab('login')">Entrar</button>
+        <button class="tab" id="tab-cadastro" onclick="trocarTab('cadastro')">Cadastrar</button>
+      </div>
+
+      <div class="painel-form ativo" id="painel-login">
+        <div class="grupo-campo">
+          <label>Nickname</label>
+          <input type="text" id="login-nickname" />
+        </div>
+        <div class="grupo-campo">
+          <label>Senha</label>
+          <input type="password" id="login-senha" />
+        </div>
+        <div class="msg-erro" id="erro-login">⚠️ Usuário ou senha incorretos</div>
+        <button class="btn-submit-modal" onclick="submeterLogin()">Entrar</button>
+      </div>
+
+      <div class="painel-form" id="painel-cadastro">
+        <div class="grupo-campo">
+          <label>Nickname</label>
+          <input type="text" id="cadastro-nickname" />
+        </div>
+        <div class="grupo-campo">
+          <label>Senha</label>
+          <input type="password" id="cadastro-senha" />
+        </div>
+        <div class="msg-erro" id="erro-cadastro">⚠️ Nickname já existe</div>
+        <button class="btn-submit-modal" onclick="submeterCadastro()">Criar Conta</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Converte os dados do usuário do Flask para o JS
+    let usuarioAtual = JSON.parse('{{ usuario | tojson if usuario else "null" }}');
+
+    function atualizarInterface() {
+        if (usuarioAtual) {
+            document.getElementById("btn-abrir-modal").style.display = "none";
+            document.getElementById("btn-logout").style.display = "block";
+            document.getElementById("info-usuario").textContent = "@" + usuarioAtual.nickname;
+        }
+    }
+    atualizarInterface();
+
+    function abrirModal(aba) {
+        document.getElementById("modal-overlay").classList.add("visivel");
+        trocarTab(aba);
+    }
+
+    function trocarTab(aba) {
+        document.getElementById("tab-login").classList.toggle("ativa", aba === 'login');
+        document.getElementById("tab-cadastro").classList.toggle("ativa", aba === 'cadastro');
+        document.getElementById("painel-login").classList.toggle("ativo", aba === 'login');
+        document.getElementById("painel-cadastro").classList.toggle("ativo", aba === 'cadastro');
+    }
+
+    async function submeterLogin() {
+        const nickname = document.getElementById("login-nickname").value;
+        const senha = document.getElementById("login-senha").value;
+        const resp = await fetch("/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({nickname, senha})
+        });
+        if (resp.ok) location.reload();
+        else document.getElementById("erro-login").classList.add("visivel");
+    }
+
+    async function submeterCadastro() {
+        const nickname = document.getElementById("cadastro-nickname").value;
+        const senha = document.getElementById("cadastro-senha").value;
+        const resp = await fetch("/cadastrar", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({nickname, senha})
+        });
+        if (resp.ok) trocarTab('login');
+        else document.getElementById("erro-cadastro").classList.add("visivel");
+    }
+
+    async function fazerLogout() {
+        await fetch("/logout", {method: "POST"});
+        location.reload();
+    }
+
+    function toggleComentarios(id) {
+        if (!usuarioAtual) return abrirModal('login');
+        document.getElementById(`comentarios-${id}`).classList.toggle("aberta");
+    }
+
+    async function curtir(id, botao) {
+        if (!usuarioAtual) return abrirModal('login');
+        const resp = await fetch(`/curtir/${id}`, {method: "POST"});
+        const dados = await resp.json();
+        botao.querySelector(".contador-curtida").textContent = dados.total_curtidas;
+        botao.classList.toggle("ativo", dados.curtiu);
+    }
+
+    async function enviarComentario(id) {
+        const input = document.getElementById(`input-${id}`);
+        const texto = input.value;
+        if (!texto) return;
+        const resp = await fetch(`/comentar/${id}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({texto})
+        });
+        if (resp.ok) location.reload();
+    }
+
+    async function excluirComentario(id) {
+        if (confirm("Excluir?")) {
+            await fetch(`/comentario/${id}`, {method: "DELETE"});
+            location.reload();
+        }
+    }
+
+    // Fecha modal clicando fora
+    window.onclick = (e) => { if(e.target.id == 'modal-overlay') e.target.classList.remove("visivel"); }
+  </script>
+</body>
+</html>

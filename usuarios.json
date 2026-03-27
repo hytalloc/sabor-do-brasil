@@ -1,0 +1,35 @@
+{
+  "proximo_usuario_id": 3,
+  "proximo_comentario_id": 2,
+  "usuarios": [
+    {
+      "id": 1,
+      "nickname": "hytallo",
+      "senha": "$2b$12$rJBhKNsuJmNB.m46CvVedef8TfbyOphe9/rB7CrB9WEjejDwSsTa2",
+      "perfil": "comum"
+    },
+    {
+      "id": 2,
+      "nickname": "lucas",
+      "senha": "$2b$12$XEcwBzOYQuUhXaC3VzaK1Oa3sbqkkcyrEU8ec9Pe1Ve7m.XTXOyUu",
+      "perfil": "comum"
+    }
+  ],
+  "receitas": [
+    {
+      "id": 1,
+      "nome": "Feijoada",
+      "curtidas": [
+        "lucas"
+      ],
+      "comentarios": [
+        {
+          "id": 1,
+          "autor_id": 2,
+          "autor_nickname": "lucas",
+          "texto": "otimo"
+        }
+      ]
+    }
+  ]
+}
